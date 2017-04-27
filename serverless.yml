@@ -1,0 +1,16 @@
+service: test
+
+provider:
+    name: aws
+    runtime: nodejs4.3
+    region: ${env:AWS_REGION}
+    stage: ${env:NODE_ENV}
+
+functions:
+    test:
+        handler: handler.test
+        name: ${self:provider.stage}-test
+        events:
+            - http:
+                path: test/
+                method: get

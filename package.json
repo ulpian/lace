@@ -1,0 +1,29 @@
+{
+  "name": "lace",
+  "version": "0.0.1",
+  "description": "Framework for building functional-style serverless API",
+  "main": "handler.js",
+  "scripts": {
+    "test": "serverless invoke local -s local -f test -p test/data/test.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ulpian/lace.git"
+  },
+  "keywords": [
+    "serverless",
+    "functional",
+    "api",
+    "lace",
+    "framework"
+  ],
+  "author": "Ulpian Morina <ulpianmorina@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ulpian/lace/issues"
+  },
+  "homepage": "https://github.com/ulpian/lace#readme",
+  "dependencies": {
+    "immutable": "^3.8.1"
+  }
+}
