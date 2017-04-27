@@ -98,7 +98,7 @@ class Components {
             } else {
                 stack = this.components[i].source(stack);
             }
-            if (i === 0) return class x extends stack { components () { return components; } }
+            if (i === 0) return class extends stack { components () { return components; } }
         }
     }
 }
