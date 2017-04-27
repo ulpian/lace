@@ -16,7 +16,8 @@ class Core {
             meta: {},
             deps: Immutable.Map({
                 immutable: require('immutable')
-            })
+            }),
+            Components: this.components()
         })
     }
     after () {
@@ -89,6 +90,7 @@ class Components {
         return this;
     }
     combine () {
+        let components = this.components;
         let stack = null;
         for (let i = (this.components.length - 1); i > -1; i--) {
             if (i === (this.components.length - 1)) {
@@ -96,7 +98,7 @@ class Components {
             } else {
                 stack = this.components[i].source(stack);
             }
-            if (i === 0) return class x extends stack {}
+            if (i === 0) return class x extends stack { components () { return components; } }
         }
     }
 }
