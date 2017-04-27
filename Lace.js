@@ -30,11 +30,11 @@ class Core {
         this.state = this.state.setIn(['deps', name], source);
         return this.after();
     }
-    setInitialState (state) {
+    setState (state) {
         this.state = state;
         return this.after();
     }
-    setState (key, value) {
+    setInState (key, value) {
         this.state = this.state.set(key, value);
         return this.after();
     }
@@ -66,8 +66,12 @@ class Core {
         console.log(this.state.toJS());
         return this.after();
     }
+    endState () {
+        return this.state;
+    }
 }
 
+// To-do: list the components that are used within the state
 class Components {
     constructor () {
         this.components = [];
