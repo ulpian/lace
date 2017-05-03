@@ -12,12 +12,12 @@ const Immutable = require('immutable');
 class Core {
     constructor () {
         this.state = Immutable.Map({
-            connection: 'hey',
+            connection: null,
             meta: {},
             deps: Immutable.Map({
-                immutable: require('immutable')
+                immutable: Immutable
             }),
-            Components: this.components()
+            Components: (this.components ? this.components() : [])
         })
     }
     after () {
@@ -38,6 +38,22 @@ class Core {
     setInState (key, value) {
         this.state = this.state.set(key, value);
         return this.after();
+    }
+    gen (gen) {
+        let generator = gen(this.state);
+
+        let stack = [];
+        stack.push(generator.next());
+
+        for (let i = 0; i < 10; i++) {
+            let g = stack[i];
+            if (g) {
+                if (g.done === true) {
+                    if (stack[stack.length - 1].value !== undefined) this.state = stack[stack.length - 1].value;
+                    return this.after();
+                } else stack.push(generator.next(g.value));
+            } else break;
+        }
     }
     run (fn) {
         try {
@@ -92,15 +108,27 @@ class Components {
     combine () {
         let components = this.components;
         let stack = null;
+        // Re-write loop in functional programming way
+        // Could inherit Core into the Component class and only inherit components via function
         for (let i = (this.components.length - 1); i > -1; i--) {
-            if (i === (this.components.length - 1)) {
-                stack = this.components[i].source(Core);
-            } else {
-                stack = this.components[i].source(stack);
-            }
+            // TO-DO Check components for conflicting method names
+            if (i === (this.components.length - 1)) { stack = this.components[i].source(Core); }
+            else { stack = this.components[i].source(stack); }
             if (i === 0) return class extends stack { components () { return components; } }
         }
     }
 }
+
+// // functional looping
+// const sum = (args) => {
+//     if (args.length === 0) {
+//         return 0;
+//     } else if (args.length === 1) {
+//         return args[0];
+//     } else {
+//         return args[0] + sum(args.slice(1,args.length));
+//     }
+// }
+// console.log(sum([1,2,3,4,5]));
 
 module.exports = Components;

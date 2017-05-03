@@ -40,6 +40,10 @@ const state = new Lace()
 .register('awsLambda', awsLambda)
 .combine();
 
+let prom = (n) => new Promise((res, rej) => {
+    res(n);
+});
+
 // Handler
 exports.test = (event, context, callback) => {
     let slice = new state()
@@ -51,13 +55,20 @@ exports.test = (event, context, callback) => {
             .run((state) => {
                 return state.set('foo', 'bar');
             })
+            .gen(function * (state) {
+                let p = yield 4;
+                let f = yield 100 + p;
+                return state.set('someResult', f);
+            })
             .run((state) => {
                 let event = state.get('meta').handler.get('event');
                 let context = state.get('meta').handler.get('context');
                 let callback = state.get('meta').handler.get('callback');
-                console.log(event);
-                console.log(context);
-                console.log(callback)
+
+                console.log(state.get('someResult'));
+                // console.log(event);
+                // console.log(context);
+                // console.log(callback)
             })
             .endState();
 
